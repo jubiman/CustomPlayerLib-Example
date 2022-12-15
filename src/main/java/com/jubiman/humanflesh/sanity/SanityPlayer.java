@@ -1,9 +1,9 @@
 package com.jubiman.humanflesh.sanity;
 
+import com.jubiman.customplayerlib.CustomPlayer;
 import necesse.engine.network.packet.PacketSpawnMob;
 import necesse.engine.network.server.Server;
 import necesse.engine.save.LoadData;
-import necesse.engine.save.SaveComponent;
 import necesse.engine.save.SaveData;
 import necesse.engine.util.GameRandom;
 import necesse.entity.mobs.Mob;
@@ -14,15 +14,14 @@ import necesse.level.maps.biomes.MobChance;
 
 import java.awt.*;
 
-public class SanityPlayer {
+public class SanityPlayer extends CustomPlayer {
 	public int ticksSinceLastHallucination;
 	public int nextHallucination;
 	public int nextSanityIncrease;
 	private byte sanity;
-	private final long auth;
 
 	public SanityPlayer(long auth) {
-		this.auth = auth;
+		super(auth);
 		ticksSinceLastHallucination = 0;
 		nextHallucination = 3333;
 		nextSanityIncrease = 1200;
@@ -78,7 +77,7 @@ public class SanityPlayer {
 	}
 
 	public void addSaveData(SaveData save) {
-		SaveData player = new SaveData(String.valueOf(auth));
+		SaveData player = generatePlayerSave();
 		player.addByte("sanity", sanity);
 		player.addInt("nextHallucination", nextHallucination);
 		player.addInt("nextSanityIncrease", nextSanityIncrease);

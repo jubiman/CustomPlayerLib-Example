@@ -1,9 +1,11 @@
 package com.jubiman.humanflesh;
 
+import com.jubiman.customplayerlib.CustomPlayerRegistry;
 import com.jubiman.humanflesh.command.SanityCommand;
 import com.jubiman.humanflesh.item.CookedHumanMeat;
 import com.jubiman.humanflesh.item.HumanMeat;
 import com.jubiman.humanflesh.mob.HarmlessMobs;
+import com.jubiman.humanflesh.sanity.SanityPlayer;
 import com.jubiman.humanflesh.sanity.SanityPlayers;
 import com.jubiman.humanflesh.utils.EnumHelper;
 import necesse.engine.GameEventListener;
@@ -29,7 +31,8 @@ public class HumanFlesh {
 	public void init() {
 		System.out.println("Human flesh init");
 
-		SanityPlayers.init();
+		//SanityPlayers.create();
+		CustomPlayerRegistry.register("sanityplayers", new SanityPlayers());
 
 		// Register item
 		ItemRegistry.registerItem("humanmeat", new HumanMeat(), 50, true);
@@ -45,14 +48,6 @@ public class HumanFlesh {
 		MobRegistry.registerMob("harmlessblackcavespider", HarmlessMobs.BlackCaveSpiderMob.class, true);
 		MobRegistry.registerMob("harmlesssandspirit", HarmlessMobs.SandSpiritMob.class, true);
 		MobRegistry.registerMob("harmlessdeepcavespirit", HarmlessMobs.DeepCaveSpiritMob.class, true);
-
-		// Event listeners
-		GameEvents.addListener(ServerStopEvent.class, new GameEventListener<ServerStopEvent>() {
-			@Override
-			public void onEvent(ServerStopEvent e) {
-				SanityPlayers.stop();
-			}
-		});
 	}
 
 	public void postInit() {

@@ -1,5 +1,7 @@
 package com.jubiman.humanflesh.patch;
 
+import com.jubiman.customplayerlib.CustomPlayerRegistry;
+import com.jubiman.humanflesh.sanity.SanityPlayer;
 import com.jubiman.humanflesh.sanity.SanityPlayers;
 import necesse.engine.modLoader.annotations.ModMethodPatch;
 import necesse.engine.network.server.Server;
@@ -13,7 +15,7 @@ public class ServerTickPatch {
 		for (int i = 0; i < server.getPlayersOnline(); ++i) {
 			PlayerMob player = server.getPlayer(i);
 			if (player.isServerClient())
-				SanityPlayers.get(player.getServerClient().authentication).tick(server);
+				((SanityPlayer) CustomPlayerRegistry.get("sanityplayers").get(player.getServerClient().authentication)).tick(server);
 		}
 	}
 }

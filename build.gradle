@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+	id 'java'
 }
 
 // Change the values below this to your mods values
@@ -24,6 +24,7 @@ project.ext.clientside = false
  * Dependencies define the default load order of mods
  * Uncomment and configure these if your mod has dependencies
  */
+project.ext.modDependencies = ["com.jubiman.customplayerlib"]
 //project.ext.modDependencies = ["other.modid1", "other.modid2"]
 //project.ext.modOptionalDependencies = ["optional.modid1", "optional.modid2"]
 
@@ -44,99 +45,126 @@ setSourceCompatibility(JavaVersion.VERSION_1_8)
 setTargetCompatibility(JavaVersion.VERSION_1_8)
 
 repositories {
-    mavenCentral()
+	mavenCentral()
+	maven {
+		url "https://s01.oss.sonatype.org/content/repositories/releases/"
+	}
+	/*maven {
+		url "https://maven.pkg.github.com/jubiman/CustomPlayerLib/"
+		credentials {
+			username = System.getenv("GITHUB_ACTOR")
+			password = System.getenv("GITHUB_TOKEN")
+		}
+	}*/
+}
+
+configurations {
+	libDepends
 }
 
 sourceSets.main.output.resourcesDir = file("build/mod/resources/")
 sourceSets.main.java.outputDir = file("build/mod/")
+sourceSets.main.compileClasspath += configurations.libDepends // Adds libDepends configuration to classpath
 def buildLocation = "build/jar"
 
 compileJava.options.encoding = "UTF-8"
 
 if (!file(gameDirectory + "/Necesse.jar").exists()) {
-    throw new Exception("Could not find game install directory. Make sure it is correct in build.gradle file.")
+	throw new Exception("Could not find game install directory. Make sure it is correct in build.gradle file.")
 }
 
 dependencies {
-    implementation files(gameDirectory + "/Necesse.jar")
-    implementation fileTree(gameDirectory + "/lib/")
-    implementation fileTree("./mods/") // Add all mods located in local mods folder
+	implementation files(gameDirectory + "/Necesse.jar")
+	implementation fileTree(gameDirectory + "/lib/")
+	implementation fileTree("./mods/") // Add all mods located in local mods folder
+
+	// We need the mod loaded anyway, so just for compiling we need to download the jar
+	compileOnly "com.jubiman:customplayerlib:1.3"
+
+	//libDepends group: 'com.jubiman', name: 'customplayerlib', version: '1.0'
+	//    libDepends group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
+	//    libDepends file("path/to/library/jar.jar")
 }
 
 task createAppID {
-    group "necesse"
-    description "Creates steam_appid.txt file"
+	group "necesse"
+	description "Creates steam_appid.txt file"
 
-    doLast {
-        file("steam_appid.txt").text = "1169040"
-    }
+	doLast {
+		file("steam_appid.txt").text = "1169040"
+	}
 }
 
 task createModInfoFile(type: JavaExec) {
-    group "necesse"
-    description "Creates the mod info file"
+	group "necesse"
+	description "Creates the mod info file"
 
-    classpath = files(gameDirectory + "/Necesse.jar")
+	classpath = files(gameDirectory + "/Necesse.jar")
 
-    main = "CreateModInfoFile"
-    args "-file", "${sourceSets.main.java.outputDir}/mod.info",
-            "-id", "${project.ext.modID}",
-            "-name", "${project.ext.modName}",
-            "-version", "${project.ext.modVersion}",
-            "-gameVersion", "${project.ext.gameVersion}",
-            "-description", "${project.ext.modDescription}",
-            "-author", "${project.ext.author}",
-            "-clientside", "${project.ext.clientside}",
-            "-dependencies", project.ext.has("modDependencies") ? "[" + project.ext.modDependencies.join(", ") + "]" : "",
-            "-optionalDependencies", project.ext.has("modOptionalDependencies") ? "[" + project.ext.modOptionalDependencies.join(", ") + "]" : ""
+	main = "CreateModInfoFile"
+	args "-file", "${sourceSets.main.java.outputDir}/mod.info",
+			"-id", "${project.ext.modID}",
+			"-name", "${project.ext.modName}",
+			"-version", "${project.ext.modVersion}",
+			"-gameVersion", "${project.ext.gameVersion}",
+			"-description", "${project.ext.modDescription}",
+			"-author", "${project.ext.author}",
+			"-clientside", "${project.ext.clientside}",
+			"-dependencies", project.ext.has("modDependencies") ? "[" + project.ext.modDependencies.join(", ") + "]" : "",
+			"-optionalDependencies", project.ext.has("modOptionalDependencies") ? "[" + project.ext.modOptionalDependencies.join(", ") + "]" : ""
 }
 // Makes compiling also create mod info file
 classes.dependsOn("createModInfoFile")
 
 task runClient(type: JavaExec) {
-    group "necesse"
-    description "Run client with current mod"
-    dependsOn "buildModJar", "createAppID"
+	group "necesse"
+	description "Run client with current mod"
+	dependsOn "buildModJar", "createAppID"
 
-    classpath = files(gameDirectory + "/Necesse.jar")
+	classpath = files(gameDirectory + "/Necesse.jar")
+	classpath += configurations.libDepends
 
-    main = "StartClient"
-    jvmArgs "-Xms512m", "-Xmx3G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
-    args "-mod \"${buildLocation}\""
+	main = "StartClient"
+	jvmArgs "-Xms512m", "-Xmx3G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
+	args "-mod \"${buildLocation}\""
 }
 
 task runDevClient(type: JavaExec) {
-    group "necesse"
-    description "Run client with current mod"
-    dependsOn "buildModJar", "createAppID"
+	group "necesse"
+	description "Run client with current mod"
+	dependsOn "buildModJar", "createAppID"
 
-    classpath = files(gameDirectory + "/Necesse.jar")
+	classpath = files(gameDirectory + "/Necesse.jar")
+	classpath += configurations.libDepends
 
-    main = "StartClient"
-    jvmArgs "-Xms512m", "-Xmx3G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
-    args "-dev 1", "-mod \"${buildLocation}\""
+	main = "StartClient"
+	jvmArgs "-Xms512m", "-Xmx3G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
+	args "-dev 1", "-mod \"${buildLocation}\""
 }
 
 task runServer(type: JavaExec) {
-    group "necesse"
-    description "Run server with current mod"
-    dependsOn "buildModJar"
+	group "necesse"
+	description "Run server with current mod"
+	dependsOn "buildModJar"
 
-    classpath = files(gameDirectory + "/Server.jar")
+	classpath = files(gameDirectory + "/Server.jar")
+	classpath += configurations.libDepends
 
-    main = "StartServer"
-    jvmArgs "-Xms512m", "-Xmx3G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
-    args "-mod \"${buildLocation}\""
+	main = "StartServer"
+	jvmArgs "-Xms512m", "-Xmx3G", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseG1GC", "-XX:G1NewSizePercent=20", "-XX:G1ReservePercent=20", "-XX:MaxGCPauseMillis=50", "-XX:G1HeapRegionSize=32M"
+	args "-mod \"${buildLocation}\""
 }
 
 task buildModJar(type: Jar) {
-    group "necesse"
-    description "Generates the mod jar into the build folder"
-    dependsOn "classes"
+	group "necesse"
+	description "Generates the mod jar into the build folder"
+	dependsOn "classes"
 
-    // Add mod output
-    from sourceSets.main.java.outputDir
+	// Add mod output
+	from sourceSets.main.java.outputDir
+	// Add the dependencies
+	from configurations.libDepends
 
-    archiveName "${jarName}.jar"
-    destinationDir file(buildLocation)
+	archiveName "${jarName}.jar"
+	destinationDir file(buildLocation)
 }

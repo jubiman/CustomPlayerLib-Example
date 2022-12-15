@@ -1,5 +1,7 @@
 package com.jubiman.humanflesh.item;
 
+import com.jubiman.customplayerlib.CustomPlayerRegistry;
+import com.jubiman.humanflesh.sanity.SanityPlayer;
 import com.jubiman.humanflesh.sanity.SanityPlayers;
 import necesse.engine.localization.Localization;
 import necesse.entity.mobs.PlayerMob;
@@ -21,7 +23,7 @@ public class HumanMeat extends FoodConsumableItem {
 		boolean consumed = super.consume(level, player, item);
 		if (consumed)
 			if (player.isServerClient())
-				SanityPlayers.get(player.getServerClient().authentication).removeSanity(10);
+				((SanityPlayer) CustomPlayerRegistry.get("sanityplayers").get(player.getServerClient().authentication)).removeSanity(10);
 		return consumed;
 	}
 
