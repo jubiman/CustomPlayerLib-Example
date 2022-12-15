@@ -3,8 +3,6 @@ package com.jubiman.humanflesh.sanity;
 import com.jubiman.customplayerlib.CustomPlayers;
 import com.jubiman.humanflesh.mob.HarmlessMobs;
 import necesse.engine.network.server.ServerClient;
-import necesse.engine.save.LoadData;
-import necesse.engine.save.SaveData;
 import necesse.entity.mobs.Mob;
 import necesse.entity.mobs.hostile.pirates.PirateCaptainMob;
 import necesse.level.maps.Level;
@@ -17,10 +15,12 @@ public class SanityPlayers extends CustomPlayers<SanityPlayer> {
 	public static final MobSpawnTable spawnTable = new MobSpawnTable();
 
 	public SanityPlayers() {
-		super(SanityPlayer.class);
+		super(SanityPlayer.class, "sanityplayers");
+		// call this class' method
 		init();
 	}
 
+	// optional method
 	public void init() {
 		spawnTable.add(generate(10, HarmlessMobs.DeepCaveSpiritMob.class)
 		).add(generate(15, HarmlessMobs.SandSpiritMob.class)
@@ -51,20 +51,5 @@ public class SanityPlayers extends CustomPlayers<SanityPlayer> {
 				}
 			}
 		};
-	}
-
-	@Override
-	public void save(SaveData saveData) {
-		SaveData save = new SaveData("sanityplayers");
-		for (SanityPlayer player : valueIterator())
-			player.addSaveData(save);
-
-		saveData.addSaveData(save);
-	}
-
-	@Override
-	public void load(LoadData loadData) {
-		for (LoadData data : loadData.getLoadData())
-			get(Long.parseLong(data.getName())).load(data);
 	}
 }

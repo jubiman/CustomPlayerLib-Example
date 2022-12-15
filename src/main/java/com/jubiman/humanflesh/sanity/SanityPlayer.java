@@ -76,6 +76,7 @@ public class SanityPlayer extends CustomPlayer {
 		return sanity;
 	}
 
+	@Override
 	public void addSaveData(SaveData save) {
 		SaveData player = generatePlayerSave();
 		player.addByte("sanity", sanity);
@@ -85,6 +86,7 @@ public class SanityPlayer extends CustomPlayer {
 		save.addSaveData(player);
 	}
 
+	@Override
 	public void load(LoadData data) {
 		sanity = data.getByte("sanity");
 		nextHallucination = data.getInt("nextHallucination");
