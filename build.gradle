@@ -72,7 +72,7 @@ dependencies {
 	implementation fileTree("./mods/") // Add all mods located in local mods folder
 
 	// We need the mod loaded anyway, so just for compiling we need to download the jar
-	compileOnly "com.jubiman:customplayerlib:1.4"
+	compileOnly "com.jubiman:customplayerlib:1.5"
 
 	//libDepends group: 'com.jubiman', name: 'customplayerlib', version: '1.0'
 	//    libDepends group: 'org.slf4j', name: 'slf4j-api', version: '2.0.6'
