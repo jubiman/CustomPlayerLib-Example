@@ -1,13 +1,13 @@
-package com.jubiman.humanflesh;
+package com.jubiman.customplayerlibexample;
 
 import com.jubiman.customplayerlib.CustomPlayerRegistry;
-import com.jubiman.humanflesh.player.MyPlayers;
-import com.jubiman.humanflesh.player.MyPlayersTickable;
+import com.jubiman.customplayerlibexample.player.MyPlayers;
+import com.jubiman.customplayerlibexample.player.MyPlayersTickable;
 import necesse.engine.modLoader.annotations.ModEntry;
 
 
 @ModEntry
-public class HumanFlesh {
+public class CustomPlayerLibExample {
 	public void init() {
 		System.out.println("Human flesh init");
 

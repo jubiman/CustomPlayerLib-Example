@@ -1,4 +1,4 @@
-package com.jubiman.humanflesh.player;
+package com.jubiman.customplayerlibexample.player;
 
 import com.jubiman.customplayerlib.CustomPlayerRegistry;
 import com.jubiman.customplayerlib.CustomPlayersTickable;
