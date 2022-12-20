@@ -17,7 +17,12 @@ public class MyPlayer extends CustomPlayer {
 	}
 
 	@Override
-	public void load(LoadData data) {
-		// load stuff
+	public void loadEnter(LoadData data) {
+		// load stuff before the rest of the player is loaded
+	}
+
+	@Override
+	public void loadExit(LoadData data) {
+		// load stuff after the rest of the player is loaded
 	}
 }

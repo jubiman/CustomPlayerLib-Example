@@ -1,13 +1,13 @@
 package com.jubiman.customplayerlibexample.player;
 
 import com.jubiman.customplayerlib.CustomPlayerRegistry;
-import com.jubiman.customplayerlib.CustomPlayers;
+import com.jubiman.customplayerlib.CustomPlayersHandler;
 
-public class MyPlayers extends CustomPlayers<MyPlayer> {
+public class MyPlayersHandler extends CustomPlayersHandler<MyPlayer> {
 	// It's recommended to store the name in a static constant, so you can easily access it
 	public static final String name = "myplayers";
 
-	public MyPlayers() {
+	public MyPlayersHandler() {
 		super(MyPlayer.class, name);
 		// call this class' method
 		init();
@@ -25,8 +25,8 @@ public class MyPlayers extends CustomPlayers<MyPlayer> {
 	 * This replaces CustomPlayerRegistry.get(MyPlayers.name).get(auth) with MyPlayers.getPlayer(auth).
 	 * It's just less code to write :)
 	 */
-	public static MyPlayers getInstance() {
-		return (MyPlayers) CustomPlayerRegistry.get(name);
+	public static MyPlayersHandler getInstance() {
+		return (MyPlayersHandler) CustomPlayerRegistry.get(name);
 	}
 
 	/**

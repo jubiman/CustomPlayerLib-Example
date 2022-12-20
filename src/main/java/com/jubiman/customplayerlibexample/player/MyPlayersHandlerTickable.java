@@ -1,12 +1,12 @@
 package com.jubiman.customplayerlibexample.player;
 
 import com.jubiman.customplayerlib.CustomPlayerRegistry;
-import com.jubiman.customplayerlib.CustomPlayersTickable;
+import com.jubiman.customplayerlib.CustomPlayersHandlerTickable;
 
-public class MyPlayersTickable extends CustomPlayersTickable<MyPlayerTickable> {
+public class MyPlayersHandlerTickable extends CustomPlayersHandlerTickable<MyPlayerTickable> {
 	public static final String name = "myplayerstickable";
 
-	public MyPlayersTickable() {
+	public MyPlayersHandlerTickable() {
 		super(MyPlayerTickable.class, name);
 	}
 
@@ -15,8 +15,8 @@ public class MyPlayersTickable extends CustomPlayersTickable<MyPlayerTickable> {
 	 * This replaces CustomPlayerRegistry.get(MyPlayers.name).get(auth) with MyPlayers.getPlayer(auth).
 	 * It's just less code to write :)
 	 */
-	public static MyPlayersTickable getInstance() {
-		return (MyPlayersTickable) CustomPlayerRegistry.get(name);
+	public static MyPlayersHandlerTickable getInstance() {
+		return (MyPlayersHandlerTickable) CustomPlayerRegistry.get(name);
 	}
 
 	/**
