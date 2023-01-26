@@ -9,8 +9,6 @@ import necesse.engine.modLoader.annotations.ModEntry;
 @ModEntry
 public class CustomPlayerLibExample {
 	public void init() {
-		System.out.println("Human flesh init");
-
 		// Register the classes (you would usually only have one class)
 		CustomPlayerRegistry.register(MyPlayersHandler.name, new MyPlayersHandler());
 		CustomPlayerRegistry.register(MyPlayersHandlerTickable.name, new MyPlayersHandlerTickable());
